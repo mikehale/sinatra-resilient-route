@@ -1,24 +1,22 @@
+# frozen_string_literal: true
+
 require "rack/test"
 require "sinatra/base"
 require "sinatra/namespace"
 require "sinatra/resilient/route"
 
+module Collector
+  attr_accessor :last_route
+
+  def self.reset
+    @last_route = nil
+  end
+
+  extend self
+end
+
 describe "Sinatra::Resilient::Route" do
   include Rack::Test::Methods
-
-  class Collector
-    def self.last_route=(last_route)
-      @last_route = last_route
-    end
-
-    def self.last_route
-      @last_route
-    end
-
-    def self.reset
-      @last_route = nil
-    end
-  end
 
   def app
     Sinatra.new do

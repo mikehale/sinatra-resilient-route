@@ -12,7 +12,7 @@ module Sinatra
         def ensure_sinatra_route
           unless env["sinatra.resilient.route"]
             settings.routes[@request.request_method].each do |pattern, conditions, _|
-              break if :found_route == process_route(pattern, conditions) { :found_route }
+              break if process_route(pattern, conditions) { :found_route } == :found_route
             end
           end
 
@@ -26,13 +26,14 @@ module Sinatra
         translate(:char, :separator) { ::Mustermann::Sinatra.escape(payload)  }
         translate(:root)             { t(payload)                             }
         translate(:group)            { "(#{t(payload)})"                      }
-        translate(:union)            { "(#{t(payload, join: ?|)})"            }
+        translate(:union)            { "(#{t(payload, join: "|")})" }
         translate(:optional)         { "#{t(payload)}?"                       }
         translate(Array)             { |join: ""| map { |e| t(e) }.join(join) }
 
         translate(:capture) do
-          raise Mustermann::Error, 'cannot render variables'      if node.is_a? :variable
-          raise Mustermann::Error, 'cannot translate constraints' if constraint or qualifier or convert
+          raise Mustermann::Error, "cannot render variables"      if node.is_a? :variable
+          raise Mustermann::Error, "cannot translate constraints" if constraint || qualifier || convert
+
           ":#{name}"
         end
       end
@@ -62,7 +63,6 @@ module Sinatra
       end
     end
   end
-
 
   register Resilient::Route
 end

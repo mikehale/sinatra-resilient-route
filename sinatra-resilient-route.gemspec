@@ -31,8 +31,8 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   spec.add_dependency "sinatra"
   spec.add_dependency "sinatra-contrib"
-  spec.add_development_dependency "rspec"
   spec.add_development_dependency "rack-test"
+  spec.add_development_dependency "rspec"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
