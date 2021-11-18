@@ -18,6 +18,16 @@ module Sinatra
 
           env["sinatra.route"] = env["sinatra.resilient.route"]
         end
+
+        def route_signature
+          ensure_sinatra_route
+          env["sinatra.resilient.route_signature"]
+        end
+
+        def route_method
+          ensure_sinatra_route
+          env["sinatra.resilient.route_method"]
+        end
       end
 
       Sinatra1StyleRenderer = ::Mustermann::AST::Translator.create do
@@ -55,7 +65,10 @@ module Sinatra
         munged_path = Sinatra1StyleRenderer.translate(path.to_ast).to_s
 
         condition do
-          env["sinatra.resilient.route"] = "#{verb} #{env["SCRIPT_NAME"]}#{munged_path}"
+          route_signature = "#{env["SCRIPT_NAME"]}#{munged_path}"
+          env["sinatra.resilient.route_method"] = verb
+          env["sinatra.resilient.route_signature"] = route_signature
+          env["sinatra.resilient.route"] = "#{verb} #{route_signature}"
           true
         end
 
