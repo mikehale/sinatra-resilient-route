@@ -11,7 +11,7 @@ module Sinatra
       module Helpers
         def ensure_sinatra_route
           unless env["sinatra.resilient.route"]
-            settings.routes[@request.request_method].each do |pattern, conditions, _|
+            Array(settings.routes[@request.request_method]).each do |pattern, conditions, _|
               break if process_route(pattern, conditions) { :found_route } == :found_route
             end
           end
