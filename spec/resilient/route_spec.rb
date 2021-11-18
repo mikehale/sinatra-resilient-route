@@ -19,7 +19,7 @@ describe "Sinatra::Resilient::Route" do
   include Rack::Test::Methods
 
   def app
-    Sinatra.new do
+    app = Sinatra.new do
       register Sinatra::Resilient::Route
       register Sinatra::Namespace
       set :show_exceptions, false
@@ -49,6 +49,12 @@ describe "Sinatra::Resilient::Route" do
         end
       end
     end
+
+    Rack::Builder.new do
+      map "/lobster" do
+        run app
+      end
+    end
   end
 
   before do
@@ -56,17 +62,17 @@ describe "Sinatra::Resilient::Route" do
   end
 
   it "creates the correct route" do
-    get "/foo/43"
-    expect(Collector.last_route).to eq "GET /foo/:id"
+    get "/lobster/foo/43"
+    expect(Collector.last_route).to eq "GET /lobster/foo/:id"
   end
 
   it "creates the correct route for a namespace" do
-    get "/foobar/43"
-    expect(Collector.last_route).to eq "GET /foobar/:id"
+    get "/lobster/foobar/43"
+    expect(Collector.last_route).to eq "GET /lobster/foobar/:id"
   end
 
   it "creates the correct route when an error is raised" do
-    expect { get "/before-error/43" }.to raise_error(/from before/)
-    expect(Collector.last_route).to eq "GET /before-error/:id"
+    expect { get "/lobster/before-error/43" }.to raise_error(/from before/)
+    expect(Collector.last_route).to eq "GET /lobster/before-error/:id"
   end
 end

@@ -55,7 +55,7 @@ module Sinatra
         munged_path = Sinatra1StyleRenderer.translate(path.to_ast).to_s
 
         condition do
-          env["sinatra.resilient.route"] = "#{verb} #{munged_path}"
+          env["sinatra.resilient.route"] = "#{verb} #{env["SCRIPT_NAME"]}#{munged_path}"
           true
         end
 
